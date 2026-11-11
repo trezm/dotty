@@ -1,0 +1,188 @@
+<div id="dotty-vector-preview">
+  <div class="vector-stage viz-dotted-background">
+    <canvas width="720" height="720" aria-label="Dotty expression study: luminous rounded robot eyes that glance, blink, squint, perk up, and become sleepy. Codex is on the left; Claude is on the right."></canvas>
+  </div>
+  <div class="viz-controls" aria-label="Try robot expressions">
+    <button class="btn btn-primary" type="button" data-action="play">Pause demo</button>
+    <button class="btn" type="button" data-pose="relaxed">Idle</button>
+    <button class="btn" type="button" data-pose="curious">Curious</button>
+    <button class="btn" type="button" data-pose="skeptical">Skeptical</button>
+    <button class="btn" type="button" data-pose="happy">Happy</button>
+    <button class="btn" type="button" data-pose="sleepy">Sleepy</button>
+    <button class="btn" type="button" data-pose="reply">New reply</button>
+    <button class="btn" type="button" data-pose="question">Question</button>
+  </div>
+  <div class="text-small text-muted" data-status aria-live="polite">Relaxed</div>
+</div>
+<style>
+  #dotty-vector-preview { display:grid; gap:calc(var(--font-size-base) * .8); }
+  #dotty-vector-preview .vector-stage { display:grid; place-items:center; min-height:320px; padding:20px 0; }
+  #dotty-vector-preview canvas { display:block; width:min(100%,390px); height:auto; border-radius:50%; filter:drop-shadow(0 12px 22px rgba(0,0,0,.18)); touch-action:pan-y; }
+</style>
+<script id="dotty-vector-motion" type="application/json">
+{
+  "duration":14,
+  "poses":{
+    "relaxed":{"label":"Relaxed","x":0,"y":0,"wl":51,"wr":51,"hl":55,"hr":55,"yl":0,"yr":0,"tl":0,"tr":0,"joy":0,"codex":0,"claude":0,"question":false},
+    "right":{"label":"Glancing right","x":0.72,"y":-0.12,"wl":48,"wr":54,"hl":51,"hr":56,"yl":0,"yr":-1,"tl":1,"tr":0,"joy":0,"codex":0,"claude":0,"question":false},
+    "left":{"label":"Glancing left","x":-0.68,"y":0.08,"wl":54,"wr":48,"hl":55,"hr":50,"yl":-1,"yr":1,"tl":0,"tr":-1,"joy":0,"codex":0,"claude":0,"question":false},
+    "curious":{"label":"Curious","x":0.35,"y":-0.18,"wl":49,"wr":53,"hl":31,"hr":61,"yl":4,"yr":-6,"tl":-4,"tr":1,"joy":0,"codex":0,"claude":0,"question":false},
+    "listening":{"label":"Listening","x":0,"y":-0.12,"wl":54,"wr":54,"hl":63,"hr":63,"yl":-3,"yr":-3,"tl":0,"tr":0,"joy":0,"codex":0,"claude":0,"question":false},
+    "reply":{"label":"New Codex reply","x":-0.12,"y":-0.15,"wl":56,"wr":51,"hl":64,"hr":55,"yl":-4,"yr":0,"tl":0,"tr":0,"joy":0,"codex":1,"claude":0,"question":false},
+    "question":{"label":"Claude needs you","x":0.13,"y":-0.08,"wl":49,"wr":54,"hl":39,"hr":62,"yl":2,"yr":-5,"tl":-4,"tr":2,"joy":0,"codex":1,"claude":1,"question":true},
+    "happy":{"label":"Content","x":0,"y":0,"wl":56,"wr":56,"hl":26,"hr":26,"yl":-5,"yr":-5,"tl":0,"tr":0,"joy":1,"codex":0,"claude":0,"question":false},
+    "skeptical":{"label":"Skeptical","x":-0.12,"y":0,"wl":51,"wr":50,"hl":25,"hr":40,"yl":1,"yr":0,"tl":-6,"tr":5,"joy":0,"codex":0,"claude":0,"question":false},
+    "sleepy":{"label":"Sleepy","x":0,"y":0.25,"wl":51,"wr":51,"hl":13,"hr":15,"yl":5,"yr":4,"tl":1,"tr":-1,"joy":0,"codex":0,"claude":0,"question":false}
+  },
+  "blinks":[[0.65,0.17],[2.28,0.15],[5.6,0.16],[8.7,0.15],[8.98,0.15],[11.5,0.46],[12.08,0.19]],
+  "timeline":[
+    {"t":0,"pose":"relaxed"},{"t":1.04,"pose":"relaxed"},
+    {"t":1.18,"pose":"right","x":0.94},{"t":1.43,"pose":"right"},{"t":2.16,"pose":"right"},
+    {"t":2.33,"pose":"left","x":-0.89},{"t":2.58,"pose":"left"},{"t":3.08,"pose":"left"},
+    {"t":3.45,"pose":"curious"},{"t":4.32,"pose":"curious"},
+    {"t":4.5,"pose":"listening"},{"t":5.48,"pose":"listening"},
+    {"t":5.61,"pose":"reply","wl":49,"hl":50},{"t":5.83,"pose":"reply","wl":60,"hl":68},
+    {"t":6.04,"pose":"reply"},{"t":6.75,"pose":"reply"},
+    {"t":7.0,"pose":"question"},{"t":8.0,"pose":"question"},
+    {"t":8.28,"pose":"happy"},{"t":9.2,"pose":"happy"},
+    {"t":9.48,"pose":"skeptical"},{"t":10.15,"pose":"skeptical"},
+    {"t":10.65,"pose":"sleepy"},{"t":11.78,"pose":"sleepy"},
+    {"t":12.17,"pose":"listening"},{"t":12.5,"pose":"relaxed"},{"t":14,"pose":"relaxed"}
+  ]
+}
+</script>
+<script>
+(() => {
+  const root=document.getElementById('dotty-vector-preview');
+  const canvas=root.querySelector('canvas'), ctx=canvas.getContext('2d');
+  const motion=JSON.parse(document.getElementById('dotty-vector-motion').textContent);
+  const button=root.querySelector('[data-action="play"]'), status=root.querySelector('[data-status]');
+  const numeric=['x','y','wl','wr','hl','hr','yl','yr','tl','tr','joy'];
+  const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+  const settings={theme:'Mint',energy:1,rounding:9,usage:false};
+  const saved=window.openai?.widgetState?.modelContent;
+  if(['Mint','Ice','Zed'].includes(saved?.vectorTheme)) settings.theme=saved.vectorTheme;
+  if(typeof saved?.vectorUsage==='boolean') settings.usage=saved.vectorUsage;
+  let playing=!reduced.matches, origin=performance.now(), offset=0;
+  let manual=null, manualStart=0, manualFrom=null, pointer=null, lastLabel='';
+  let shown={...motion.poses.relaxed};
+  const blend=(a,b,u)=>{
+    const s={...b};
+    for(const key of numeric) s[key]=a[key]+(b[key]-a[key])*u;
+    return s;
+  };
+  const ease=u=>u*u*(3-2*u);
+  const resolve=k=>({...motion.poses[k.pose],...k});
+  function stateAt(t) {
+    let i=0;
+    while(i<motion.timeline.length-2 && t>=motion.timeline[i+1].t) i++;
+    const a=resolve(motion.timeline[i]), b=resolve(motion.timeline[i+1]);
+    const u=ease(Math.min(1,Math.max(0,(t-a.t)/(b.t-a.t))));
+    const s=blend(a,b,u);
+    if(u<.5) Object.assign(s,{label:a.label,codex:a.codex,claude:a.claude,question:a.question});
+    return s;
+  }
+  function blink(t,index) {
+    let open=1;
+    for(const [center,duration] of motion.blinks) {
+      const u=(t-center-index*.009)/duration+.5;
+      if(u>0 && u<1) open=Math.min(open,Math.max(.035,u<.4?1-ease(u/.4):ease((u-.4)/.6)));
+    }
+    return open;
+  }
+  function shape(x,y,w,h,tilt,joy) {
+    const l=x-w/2,r=x+w/2;
+    const corner=Math.min(settings.rounding,w*.22,h*.3);
+    const tl=y-h/2+tilt,tr=y-h/2-tilt,b=y+h/2;
+    const curve=joy*Math.min(1,h/26);
+    ctx.beginPath();ctx.moveTo(l+corner,tl);
+    ctx.quadraticCurveTo(x,y-h/2-curve*10,r-corner,tr);
+    ctx.quadraticCurveTo(r,tr,r,tr+corner);
+    ctx.lineTo(r,b-corner);ctx.quadraticCurveTo(r,b,r-corner,b);
+    ctx.quadraticCurveTo(x,b-curve*33,l+corner,b);
+    ctx.quadraticCurveTo(l,b,l,b-corner);
+    ctx.lineTo(l,tl+corner);ctx.quadraticCurveTo(l,tl,l+corner,tl);ctx.closePath();
+  }
+  function text(value,x,y,size,color) {
+    ctx.font=`400 ${size}px ui-monospace,monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=color;ctx.fillText(value,x,y);
+  }
+  function palette() {
+    return settings.theme==='Zed'?{light:'#ffffa6',core:'#f4fa31',glow:'#ffff00'}:
+      settings.theme==='Ice'?{light:'#bdffff',core:'#59dfe9',glow:'#44dfff'}:
+      {light:'#adffe7',core:'#47edb4',glow:'#4dffce'};
+  }
+  function paint(t,now) {
+    const p=palette(), bg='#05090c', muted='#687b80';
+    let s=manual?blend(manualFrom,manual,ease(Math.min(1,(now-manualStart)/180))):stateAt(t);
+    if(pointer) s={...s,x:pointer.x,y:pointer.y};
+    shown={...s};
+    const active=s.codex+s.claude>0;
+    const breathe=playing?Math.sin(t*1.8)*.5:0;
+    ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,240,240);
+    ctx.fillStyle=bg;ctx.beginPath();ctx.arc(120,120,119,0,Math.PI*2);ctx.fill();
+    if(active) {
+      ctx.save();ctx.globalAlpha=.3+.17*Math.sin(t*5);ctx.strokeStyle=p.glow;ctx.lineWidth=1;
+      ctx.beginPath();ctx.arc(120,120,116,0,Math.PI*2);ctx.stroke();ctx.restore();
+    }
+    text('D O T T Y',120,24,9,'#8b9c9f');
+    text('3.80V',120,39,6.5,muted);
+    [77,163].forEach((center,index)=>{
+      const open=manual?1:blink(t,index), side=index?'r':'l';
+      const x=center+s.x*settings.energy*9, y=111+s.y*settings.energy*6+s['y'+side]+breathe;
+      const w=s['w'+side], h=Math.max(2.2,s['h'+side]*open), tilt=s['t'+side]*open;
+      ctx.save();shape(x,y,w,h,tilt,s.joy);ctx.shadowColor=p.glow;ctx.shadowBlur=9;ctx.globalAlpha=.32;ctx.fillStyle=p.glow;ctx.fill();ctx.restore();
+      shape(x,y,w,h,tilt,s.joy);
+      const gradient=ctx.createLinearGradient(0,y-h/2,0,y+h/2);
+      gradient.addColorStop(0,p.light);gradient.addColorStop(1,p.core);ctx.fillStyle=gradient;ctx.fill();
+      ctx.save();shape(x,y,w,h,tilt,s.joy);ctx.clip();
+      ctx.fillStyle=bg;ctx.globalAlpha=.1;
+      for(let sy=Math.floor(y-h/2);sy<=y+h/2;sy+=2) ctx.fillRect(x-w/2,sy,w,.45);
+      ctx.restore();
+      const count=index?s.claude:s.codex;
+      text(index?'CLAUDE':'CODEX',center,164,7.5,'#799196');
+      if(count) text(`${count} ${index?(s.question?'question':'pending'):'unread'}`,center,178,7.5,p.core);
+      if(settings.usage) {
+        text(`5h ${index?42:32}%`,center,195,7,'#8d9bd7');
+        text(`7d ${index?65:8}%`,center,208,7,'#71bca4');
+      }
+    });
+    if(!settings.usage) text(s.question?'Claude needs you':s.codex?'New Codex reply':'All caught up',120,210,7,muted);
+    if(lastLabel!==s.label) {status.textContent=s.label;lastLabel=s.label;}
+    root.dataset.expression=s.label;
+  }
+  function persist() {
+    window.openai?.setWidgetState?.({modelContent:{vectorTheme:settings.theme,vectorUsage:settings.usage,vectorExpression:manual?.label||'Demo'},privateContent:{playing}})?.catch(()=>{});
+  }
+  root.querySelectorAll('[data-pose]').forEach(el=>el.addEventListener('click',()=>{
+    manualFrom={...shown};manual={...motion.poses[el.dataset.pose]};manualStart=performance.now();playing=false;pointer=null;
+    button.textContent='Play demo';persist();
+  }));
+  button.addEventListener('click',()=>{
+    if(playing) {offset=((performance.now()-origin)/1000+offset)%motion.duration;playing=false;manual=null;}
+    else {manual=null;offset=0;origin=performance.now();playing=true;}
+    button.textContent=playing?'Pause demo':'Play demo';persist();
+  });
+  canvas.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch'||reduced.matches) return;
+    const rect=canvas.getBoundingClientRect();
+    pointer={x:Math.max(-1,Math.min(1,(event.clientX-rect.left-rect.width/2)/(rect.width*.4))),y:Math.max(-.8,Math.min(.8,(event.clientY-rect.top-rect.height*.46)/(rect.height*.4)))};
+  });
+  canvas.addEventListener('pointerleave',()=>{pointer=null;});
+  window.addEventListener('openai:set_globals',event=>{
+    const state=event.detail?.globals?.widgetState?.modelContent;
+    if(['Mint','Ice','Zed'].includes(state?.vectorTheme)) settings.theme=state.vectorTheme;
+    if(typeof state?.vectorUsage==='boolean') settings.usage=state.vectorUsage;
+  });
+  if(globalThis.Tweak) {
+    const tweak=new Tweak({container:canvas,onChange:()=>{paint(offset,performance.now());persist();}});
+    tweak.addSelect(settings,'theme',{label:'Eye color',options:['Mint','Ice','Zed']});
+    tweak.addSlider(settings,'rounding',{label:'Eye corner radius',min:2,max:13,step:1,unit:'px'});
+    tweak.addSlider(settings,'energy',{label:'Glance movement',min:.4,max:1.4,step:.1});
+    tweak.addToggle(settings,'usage',{label:'Usage details'});
+  }
+  button.textContent=playing?'Pause demo':'Play demo';
+  paint(0,performance.now());
+  function frame(now) {paint(playing?((now-origin)/1000+offset)%motion.duration:offset,now);requestAnimationFrame(frame);}
+  requestAnimationFrame(frame);
+})();
+</script>
