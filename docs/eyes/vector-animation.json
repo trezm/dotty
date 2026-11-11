@@ -5,7 +5,22 @@
   "fps": 20,
   "rendered_frames": 280,
   "gif_frames": 257,
-  "style": "Luminous rounded panels; expression through lids, eye proportions and whole-eye gaze.",
+  "style": "Luminous rounded panels with split-provider perimeter usage arcs.",
+  "usage": [
+    {
+      "provider": "Codex",
+      "five_hour": 32,
+      "seven_day": 8
+    },
+    {
+      "provider": "Claude",
+      "five_hour": 42,
+      "seven_day": 65
+    }
+  ],
+  "usage_is_consumed": true,
+  "weekly_radius": 112,
+  "five_hour_radius": 105,
   "counts_are_illustrative": true,
   "firmware_changes": false
 }

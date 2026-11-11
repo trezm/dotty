@@ -65,13 +65,32 @@ def eye_path(x,y,w,h,tilt,joy):
     return [(round(a*SCALE),round(b*SCALE)) for a,b in points]
 
 
-def frame(t,usage=False):
+def frame(t,usage=True):
     s=state_at(t)
     image=Image.new('RGB',(240*SCALE,240*SCALE),BG)
     draw=ImageDraw.Draw(image)
     def text(value,x,y,size,color):
         font=ImageFont.truetype(FONT,round(size*SCALE))
         ImageDraw.Draw(image).text((x*SCALE,y*SCALE),value,font=font,fill=color,anchor='mm')
+    if usage:
+        # Left and right provider halves both fill from top toward the bottom.
+        # Pillow arcs run clockwise; reverse the left-side endpoints.
+        for index,quota in enumerate(MOTION['usage']):
+            start=-75 if index else -105
+            direction=1 if index else -1
+            for radius,used,color in ((112,quota['seven_day'],'#49d8b0'),(105,quota['five_hour'],'#718bff')):
+                # Pillow strokes inward; offset the box to keep the same
+                # centerline and round caps as the browser canvas renderer.
+                box=tuple(v*SCALE for v in (120-radius-1.5,120-radius-1.5,120+radius+1.5,120+radius+1.5))
+                def arc(end,fill):
+                    a,b=(start,end) if index else (end,start)
+                    draw.arc(box,start=a,end=b,fill=fill,width=3*SCALE)
+                    for angle in (a,b):
+                        x=120+radius*math.cos(math.radians(angle));y=120+radius*math.sin(math.radians(angle))
+                        draw.ellipse(tuple(v*SCALE for v in (x-1.5,y-1.5,x+1.5,y+1.5)),fill=fill)
+                arc(start+direction*150,'#18262e')
+                if used is not None and used>0:
+                    arc(start+direction*150*min(100,used)/100,color)
     if s['codex']+s['claude']>0:
         alpha=.3+.17*math.sin(t*5)
         color=tuple(round(a*alpha+b*(1-alpha)) for a,b in zip((77,255,206),(5,9,12)))
@@ -103,8 +122,9 @@ def frame(t,usage=False):
             label=f"{count} {'question' if s['question'] else 'pending'}" if index else f'{count} unread'
             text(label,center,178,7.5,'#47edb4')
         if usage:
-            text(f'5h {42 if index else 32}%',center,195,7,'#8d9bd7')
-            text(f'7d {65 if index else 8}%',center,208,7,'#71bca4')
+            quota=MOTION['usage'][index]
+            text(f"5h {quota['five_hour']}%",center,193,7,'#718bff')
+            text(f"7d {quota['seven_day']}%",center,205,7,'#49d8b0')
     if not usage:
         text('Claude needs you' if s['question'] else 'New Codex reply' if s['codex'] else 'All caught up',120,210,7,'#687b80')
     return image
@@ -128,7 +148,7 @@ def main():
         sheet.paste(frame(t).resize((320,320),Image.Resampling.LANCZOS),(320*i,0))
         draw.text((320*i+160,342),label,font=font,fill='#cbd7db',anchor='mm')
     sheet.save(OUT/'dotty-vector-eyes-storyboard.png')
-    (OUT/'vector-animation.json').write_text(json.dumps({'source':'dotty-vector-eyes.html','reference':'https://anki.bot/pages/meet-vector','seconds':duration/1000,'fps':fps,'rendered_frames':len(images),'gif_frames':count,'style':'Luminous rounded panels; expression through lids, eye proportions and whole-eye gaze.','counts_are_illustrative':True,'firmware_changes':False},indent=2)+'\n')
+    (OUT/'vector-animation.json').write_text(json.dumps({'source':'dotty-vector-eyes.html','reference':'https://anki.bot/pages/meet-vector','seconds':duration/1000,'fps':fps,'rendered_frames':len(images),'gif_frames':count,'style':'Luminous rounded panels with split-provider perimeter usage arcs.','usage':MOTION['usage'],'usage_is_consumed':True,'weekly_radius':112,'five_hour_radius':105,'counts_are_illustrative':True,'firmware_changes':False},indent=2)+'\n')
     print('Rendered',len(images),'frames;',duration,'ms;',count,'optimized GIF frames.')
     print(gif_path)
 
