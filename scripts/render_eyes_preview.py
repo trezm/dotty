@@ -8,7 +8,7 @@ import math
 from pathlib import Path
 import re
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "docs/eyes"
@@ -119,7 +119,7 @@ def frame(t):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--fps",type=int,default=20)
+    parser.add_argument("--fps",type=int,choices=(10,20,25,50),default=20)
     args = parser.parse_args()
     OUT.mkdir(parents=True,exist_ok=True)
     frames_dir = ROOT / ".cache/eye-animation-frames"
@@ -130,6 +130,10 @@ def main():
         image.save(frames_dir/f"frame-{i:04d}.png")
         frames.append(image.resize((480,480),Image.Resampling.LANCZOS))
     frames[0].save(OUT/"dotty-eyes.gif",save_all=True,append_images=frames[1:],duration=round(1000/args.fps),loop=0,optimize=True)
+    with Image.open(OUT/"dotty-eyes.gif") as gif:
+        encoded_frames=gif.n_frames
+        duration_ms=sum(item.info.get("duration",0) for item in ImageSequence.Iterator(gif))
+        assert duration_ms==MOTION["duration"]*1000
     frame(2.6).save(OUT/"dotty-eyes-poster.png")
     tiles=[]
     for t in (0,2.6,5.5,7.2,9.3):
@@ -142,7 +146,7 @@ def main():
         sheet.paste(tile,(360*i,0))
         pen.text((360*i+180,382),label,font=label_font,fill=TEXT,anchor="mm")
     sheet.save(OUT/"dotty-eyes-storyboard.png")
-    (OUT/"animation.json").write_text(json.dumps({"fps":args.fps,"frames":len(frames),"seconds":MOTION["duration"],"screen_pixels":[240,240],"preview_pixels":[720,720],"counts_are_illustrative":True,"usage_values_static":True},indent=2)+"\n")
+    (OUT/"animation.json").write_text(json.dumps({"fps":args.fps,"rendered_frames":len(frames),"gif_frames":encoded_frames,"seconds":duration_ms/1000,"screen_pixels":[240,240],"preview_pixels":[720,720],"counts_are_illustrative":True,"usage_values_static":True},indent=2)+"\n")
     print(f"Rendered {len(frames)} frames; GIF: {OUT/'dotty-eyes.gif'}")
     print("PNG frames:",frames_dir)
 

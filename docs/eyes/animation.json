@@ -1,7 +1,8 @@
 {
   "fps": 20,
-  "frames": 240,
-  "seconds": 12,
+  "rendered_frames": 240,
+  "gif_frames": 168,
+  "seconds": 12.0,
   "screen_pixels": [
     240,
     240

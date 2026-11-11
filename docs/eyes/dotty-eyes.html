@@ -100,7 +100,7 @@
     ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,240,240);
     ellipse(120,120,119,119,p.bg);
     const pending=s.codex+s.claude>0;
-    const alpha=pending?.6+.3*Math.sin(t*5):.35;
+    const alpha=pending ? .6+.3*Math.sin(t*5) : .35;
     arc(120,120,116,0,Math.PI*2,pending?p.eye[s.question?1:0]:p.muted,1.3,alpha);
     text('D O T T Y',120,22,11,p.text,500);
     ctx.strokeStyle=p.muted;ctx.lineWidth=.8;ctx.strokeRect(91,37,13,6);ctx.fillStyle=p.long;ctx.fillRect(93,39,7,2);ctx.fillRect(104,39,2,2);
@@ -141,7 +141,7 @@
     root.dataset.expression=s.label;
   }
   function persist() {
-    window.openai?.setWidgetState({modelContent:{eyeTheme:settings.theme,eyeExpression:manual?.label||'Demo'},privateContent:{playing}})?.catch(()=>{});
+    window.openai?.setWidgetState?.({modelContent:{eyeTheme:settings.theme,eyeExpression:manual?.label||'Demo'},privateContent:{playing}})?.catch(()=>{});
   }
   play.addEventListener('click',()=>{
     if(playing) {offset=((performance.now()-origin)/1000*settings.speed+offset)%motion.duration;playing=false;}
