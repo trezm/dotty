@@ -1,0 +1,67 @@
+DOTTY / ORIGINAL SLICED PUCK + SEPARATE BATTERY DISK / M3
+
+PRINT AT 100%, MILLIMETERS. The STL orientations are already bed aligned.
+
+Required: puck-body.stl, base-disk.stl, battery-cover.stl, bezel.stl.
+Optional fit checks: fit-ring.stl, fit-test.stl (thread grip), countersink-fit.stl.
+
+Colors: ORANGE puck-body and bezel; SLATE base-disk and battery-cover.
+Print the groups in separate filament batches; no multi-material unit needed.
+The assembled and individual STEP models retain these colors. STL cannot
+store colors. The optional fit ring uses orange in the CAD palette.
+
+Puck body: flat sliced bottom down. Use removable supports under the inclined
+rear overhang; inspect the USB roof and PCB tabs. Remove supports before fit-up.
+Base disk/cup: TOP FACE DOWN as exported, with battery cavity open upward.
+Do not turn it upright to print: that would bridge the 40.5 mm pocket roof.
+Battery cover: flat exterior and countersinks down, registration lip up.
+Bezel: face down as exported, with the wide countersink mouths on the bed.
+Countersink fit coupon: same face-down orientation as the bezel.
+With its notched edge on the left and the wide mouths facing you, the coupon
+has 6.0, 6.2, 6.4, 6.8 mm seats left to right. The bezel uses 6.2 mm.
+
+Starting settings: 0.4 mm nozzle, 0.2 mm layers, 3 walls, 4 top/bottom layers,
+15-20% infill. The 1.2 mm battery floor is six layers; check that it is solid.
+The wire-channel roof is 1.2 mm thick. The small 3.2 mm wire grooves and 8 mm
+passage roofs need slicer inspection. Keep any generated supports removable.
+Do not place permanent supports inside wire channels or the battery cavity.
+
+Battery: 40 ACROSS x 30 FRONT-TO-BACK x 8 mm THICK.
+Pocket: 40.5 x 30.5 x 8.5 mm.
+Clearance is 0.5 mm TOTAL on each axis (0.25 mm each side), not 0.5 per side.
+Do not force a tight or swollen pouch into the pocket. Printer error and real
+cell dimensions must be checked before assembling the electronics.
+
+Base disk: diameter 66 mm, height 12.2 mm. Battery floor: 1.2 mm.
+Puck: 58 mm face, 30-degree tilt, original sliced upper profile, no rear heel.
+Overall assembly: about 66 x 66 x 49.41 mm.
+
+Hardware:
+  3 x M3 x 16 mm, 90-degree COUNTERSUNK / FLAT-HEAD screws for the stack.
+  3 x M3 x 8 mm, 90-degree COUNTERSUNK / FLAT-HEAD screws for the bezel.
+  Countersunk screw lengths INCLUDE the head.
+Bezel seat: diameter 6.2 -> 3.4 mm, depth 1.4 mm, included angle 90 degrees.
+The 2.2 mm bezel retains a 0.8 mm straight hole below the cone.
+Assumed bezel head diameter 6.0 mm; top seats about 0.1 mm below the face.
+Check your actual screw in the fit coupon first; head diameters vary.
+Stack head diameter <=6.6 mm; through holes 3.4 mm; plastic grip holes 2.8 mm.
+The stack screws go through cover and disk into the puck, about 3.8 mm bite.
+Do not use longer stack screws. Hand-tighten gently; no power driver.
+
+The three underside screws clamp ALL THREE parts, so opening the battery
+cover also releases the puck from the disk. Support the puck while opening.
+Dry-fit and pre-thread without the battery first. Disconnect power for assembly.
+Route the corner lead through either 3.2 x 1.3 mm roof groove and matching
+8 x 5 mm passage into the puck. Verify your connector fits. Insert the battery
+straight through the underside, connect/test, then install the cover. Keep
+wires out of the seams and screws. The cover must close without compressing
+the battery. The nominal cell envelope excludes the separately routed lead.
+
+The disk's circular lip has 0.15 mm radial mating clearance. Adjust for your
+printer if it binds; it is for alignment, not a press fit. No adhesive is needed
+to close the case. Optional thin rubber feet can go under the flat disk.
+
+CAD and mesh checks are in validation.json. Physical fit, hardware tolerances,
+print strength, screw bite and slicer support settings remain prototype checks.
+
+Rebuild: .venv/bin/python cad/variants/m3-battery-disk/build.py

@@ -1,0 +1,59 @@
+{
+  "body": {
+    "valid_solid": true,
+    "solid_count": 1,
+    "size_mm": [
+      58.028,
+      61.051,
+      35.318
+    ],
+    "volume_mm3": 23323.2
+  },
+  "bezel": {
+    "valid_solid": true,
+    "solid_count": 1,
+    "size_mm": [
+      58.014,
+      58.002,
+      2.213
+    ],
+    "volume_mm3": 3057.4
+  },
+  "fit-ring": {
+    "valid_solid": true,
+    "solid_count": 1,
+    "size_mm": [
+      58.011,
+      57.729,
+      3.217
+    ],
+    "volume_mm3": 3466.0
+  },
+  "assembly": {
+    "face_angle_above_table_degrees": 30.0,
+    "front_top_height_mm": 8.41,
+    "rear_top_height_mm": 37.41,
+    "back_parallel_to_display": true,
+    "body_depth_normal_to_display_mm": 22.0,
+    "total_depth_normal_to_display_mm": 24.2,
+    "rear_wall_thickness_mm": 2.0,
+    "fasteners": {
+      "shaft_diameter_mm": 3.0,
+      "screw_length_mm": 8.0,
+      "base_grip_hole_diameter_mm": 2.8,
+      "bezel_clearance_diameter_mm": 3.4,
+      "head_recess_diameter_mm": 6.2
+    },
+    "integrated_rear_foot": {
+      "extension_mm": 8.0,
+      "width_mm": 32.0,
+      "visible_height_mm": 4.62
+    },
+    "size_mm": [
+      58.03,
+      62.14,
+      37.22
+    ],
+    "separate_stand": false
+  }
+}

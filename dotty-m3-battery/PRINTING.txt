@@ -1,0 +1,39 @@
+DOTTY / M3 BATTERY VERSION / VERTICAL REAR WALL
+
+Print body.stl upright on its flat bottom. bezel.stl is already face down.
+Use the matching M3 bezel and three M3 x 8 mm screws. The fit-test.stl
+coupon is the original M3 screw-fit coupon; test it before the full body.
+Base pilots are 2.8 mm, bezel clearance 3.4 mm, head recesses 6.2 x 1.1 mm.
+Hand-tighten gently. Longer screws may bottom out.
+
+Starting profile: 0.4 mm nozzle, 0.2 mm layers, 3 walls, 15-20% infill.
+The 1.2 mm battery floor is six layers at 0.2 mm; inspect the sliced file
+to ensure that floor is solid. The rear exterior wall is vertical and
+reaches the bed, removing the old sloping rear exterior overhang.
+Review local removable supports for the inclined PCB seats and USB roof.
+The battery well opens upward and does not have a low bridging roof.
+Internal supports must be removable
+through the top before assembly. This is not a certified support-free print.
+
+Battery: 34 x 25 x 5 mm, oriented 34 mm front to back, 25 mm across.
+The minimum pocket is 35 x 26 x 6 mm with a 1.2 mm bottom skin.
+The well opens into the main cavity for installation and wire routing;
+the cell is not sealed into the print. With the boards and bezel removed,
+the checked rigid-cell removal path lifts the cell flat to a 20 mm center
+height, shifts it 2.3 mm rearward, tilts it 30 degrees to match the display,
+then lifts it out along the display normal. Install in reverse order.
+Insert and test-fit the battery before fitting the boards. The dimensions
+do not specify the user's wire exit or protection-board geometry. Verify
+those against the actual battery, allow slack and insulation, and retain
+the cell without compressing it. Do not install it during printing.
+
+The face stays 58 mm diameter at 30 degrees. Its center is 4 mm higher
+than the original M3 model. The rear vertical wall is behind the assumed
+XIAO/header envelope so the USB path and board clearance remain open.
+CAD and mesh checks pass; actual hardware fit, floor stiffness, assembly
+access and slicer settings still need a physical check.
+
+Rebuild from the project root:
+  .venv/bin/python cad/variants/m3-battery/build.py
+
+The kit contains printable STLs plus editable body/assembly STEP files.

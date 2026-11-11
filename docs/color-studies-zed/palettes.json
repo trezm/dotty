@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "01-carbon",
+    "name": "Carbon",
+    "subtitle": "Near-black body / Zed-yellow rim / graphite base",
+    "body": "101018",
+    "bezel": "FFFF00",
+    "base": "272833",
+    "floor": "14141D"
+  },
+  {
+    "slug": "02-dayglow",
+    "name": "Dayglow",
+    "subtitle": "Zed-yellow body / black rim / dark-gray base",
+    "body": "FFFF00",
+    "bezel": "101018",
+    "base": "484848",
+    "floor": "14141D"
+  },
+  {
+    "slug": "03-titanium",
+    "name": "Titanium",
+    "subtitle": "Warm-gray body / graphite rim / neon-yellow base",
+    "body": "E1E0DB",
+    "bezel": "484848",
+    "base": "FFFF00",
+    "floor": "14141D"
+  },
+  {
+    "slug": "04-amethyst",
+    "name": "Amethyst",
+    "subtitle": "Zed violet / neon-yellow rim / midnight base",
+    "body": "9A7ABD",
+    "bezel": "FFFF00",
+    "base": "101018",
+    "floor": "14141D"
+  }
+]

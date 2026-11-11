@@ -1,0 +1,38 @@
+DOTTY / PARALLEL-BACK PUCK WITH REAR FOOT
+
+This revision slices the back PARALLEL to the display face, creating a
+24.2 mm thick puck including the bezel. A horizontal desk slice through
+the underside gives it a 30-degree viewing angle. The integrated rear heel
+extends the desk contact by 8 mm for better balance.
+
+1. Print fit-ring.stl first to check the display's outline and the three PCB
+   support areas. Physical fit is still untested.
+2. Print body.stl and bezel.stl at 100%, in millimeters. The body is already
+   flat on its main base and heel; the bezel is already face down.
+3. Starting profile: PLA or PETG, 0.4 mm nozzle, 0.2 mm layers, 3 walls,
+   4 top/bottom layers, 15-20% infill. Enable removable supports under the
+   overhanging parallel back face. Inspect the USB roof and internal tabs
+   too. Supports inside the cavity may start on the printed floor. Keep
+   the integrated heel attached; it is NOT a removable print support.
+4. Use three M2 x 8 mm pan/socket-head screws (head diameter <= 4.4 mm,
+   head height <= 1.1 mm for a flush finish; taller heads may sit proud).
+   Hand-thread gently into the 1.7 mm blind pilots. No heat-set inserts.
+5. Power switch ON. USB toward the curved-edge opening. Thin insulating foam
+   pads go on the support tabs, which must touch bare PCB at mounting areas.
+6. Verify the real display/header stack and cable clearance before closing.
+   Do not force the assembly or compress the active glass with the bezel.
+7. Both the main flat base and rear heel must touch the desk. Optional
+   rubber strips under these two areas must have equal thickness.
+
+Nominal circular face: diameter 54 mm.
+Front rim height: 9.4 mm. Rear rim height: 36.4 mm.
+Overall footprint: approximately 54 x 58.7 mm. Back wall: 2 mm thick.
+Body depth normal to face: 22 mm; total including bezel: 24.2 mm.
+USB opening: 18 x 10 mm in curved edge.
+Integrated heel: 8 mm extension, 32 mm wide, about 4.6 mm high at rear.
+Contact depth grows from 26.7 mm to 34.7 mm without enlarging the outline.
+Check actual XIAO/header clearance to the back wall before closing.
+Balance is modeled, not physically tested: dry-fit and test gentle taps.
+Keep the USB cable slack to avoid loading the light enclosure.
+USB powered, no battery bay. Firmware remains the same Hello World demo.
+Full assembly and customization instructions are in README.md.

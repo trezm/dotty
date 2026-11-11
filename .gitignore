@@ -1,0 +1,8 @@
+.DS_Store
+.venv/
+.cache/
+.tools/
+firmware/build/
+firmware/**/build/
+__pycache__/
+*.blend1

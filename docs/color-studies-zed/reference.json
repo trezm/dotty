@@ -1,0 +1,17 @@
+{
+  "reference_url": "https://zed-web-site.vercel.app",
+  "primary_css_colors": {
+    "neon": "#FFFF00",
+    "gray": "#E1E0DB",
+    "medium_gray": "#B9B6B9",
+    "dark_gray": "#484848",
+    "black": "#000000",
+    "white": "#FFFFFF"
+  },
+  "secondary_css_colors": {
+    "violet": "#9A7ABD",
+    "clay": "#DF704C",
+    "warm_white": "#F4F0ED"
+  },
+  "interpretation": "Near-black grainy sand, sharp neon highlights, neutral metal and muted violet. Rendering concepts only; firmware and CAD colors are not changed."
+}

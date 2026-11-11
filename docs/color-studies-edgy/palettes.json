@@ -1,0 +1,57 @@
+[
+  {
+    "slug": "01-hazard",
+    "name": "Hazard",
+    "subtitle": "Graphite body / acid rim / signal-orange base",
+    "body": "262B2F",
+    "bezel": "E7F51B",
+    "base": "F15020",
+    "floor": "30343B"
+  },
+  {
+    "slug": "02-ultraviolet",
+    "name": "Ultraviolet",
+    "subtitle": "Electric purple / laser-lime rim / near-black base",
+    "body": "5620CC",
+    "bezel": "BAFF20",
+    "base": "171322",
+    "floor": "30343B"
+  },
+  {
+    "slug": "03-hotwire",
+    "name": "Hotwire",
+    "subtitle": "Hot-pink body / black rim / violet base",
+    "body": "F33A80",
+    "bezel": "171A24",
+    "base": "5A29C9",
+    "floor": "30343B"
+  },
+  {
+    "slug": "04-voltage",
+    "name": "Voltage",
+    "subtitle": "Cobalt body / electric-cyan rim / ink base",
+    "body": "163D97",
+    "bezel": "16DAE4",
+    "base": "171D2C",
+    "floor": "30343B"
+  },
+  {
+    "slug": "05-monolith",
+    "name": "Monolith",
+    "subtitle": "Black body / satin-metal rim / charcoal base",
+    "body": "171A20",
+    "bezel": "9CA6AD",
+    "base": "23272D",
+    "floor": "30343B",
+    "rim_metallic": 0.75
+  },
+  {
+    "slug": "06-rally",
+    "name": "Rally",
+    "subtitle": "Racing-red body / chalk rim / black base",
+    "body": "EA311E",
+    "bezel": "F3F0E8",
+    "base": "1A2025",
+    "floor": "30343B"
+  }
+]

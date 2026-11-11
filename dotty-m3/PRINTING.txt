@@ -1,0 +1,33 @@
+DOTTY / M3 MACHINE-SCREW VERSION
+
+Use three standard M3 x 8 mm machine screws. Use the NEW BODY AND BEZEL
+together; the original M2 bezel and screw positions do not match this set.
+
+Body: 2.8 mm grip holes, 7.2 mm deep, with 0.4 mm entry chamfers.
+Bezel: 3.4 mm clearance holes and 6.2 mm head recesses, 1.1 mm deep.
+Heads taller than 1.1 mm will stand above the bezel. Head diameter must
+fit the 6.2 mm recess. The 58 mm outer diameter leaves room for the
+larger heads and sufficient wall thickness around the M3 holes.
+
+These are grip holes: the screws form their threads in the plastic.
+They are NOT 3.4 mm through-holes and contain no printed metal-style
+threads, nuts, or inserts. Start straight and tighten gently by hand.
+Stop if the screw binds; do not use a powered driver. Repeated removal
+can wear the plastic. Use 8 mm screws; longer ones may bottom out.
+
+PRINT fit-test.stl FIRST. It has labelled 2.6, 2.7, 2.8 and 2.9 mm holes
+inclined at the same 30-degree face angle as the body. Test on your actual
+printer/filament; 2.8 mm is the supplied body's starting size. If it is
+tight, clear the hole to 2.8 mm by hand before assembly. If it is loose,
+use a smaller pilot override and regenerate, or request that variant.
+
+Print body.stl on its flat base and rear heel; bezel.stl is already face
+down. Print at 100% in millimeters. Starting profile: 0.4 mm nozzle,
+0.2 mm layers, 3 walls, 4 top/bottom layers, 15-20% infill. Enable supports
+under the overhanging back and inspect USB/internal-tab overhangs.
+Keep the integrated heel attached; it is part of the enclosure.
+
+The circular face is now 58 mm across. Display seat, 30-degree viewing
+angle, parallel back, USB access and the 8 mm rear foot follow the same
+design. Check the actual electronics fit and gentle screen taps before
+final assembly. Both the main base and rear foot must touch the desk.

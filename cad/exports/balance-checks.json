@@ -1,0 +1,83 @@
+{
+  "status": "estimate_not_physical_test",
+  "assumptions": {
+    "nominal_masses_g_without_foot": {
+      "body": 16.0,
+      "bezel": 2.5,
+      "display": 14.0,
+      "xiao": 4.0,
+      "screws": 0.6
+    },
+    "mass_bounds_g_without_foot": {
+      "body": [
+        10,
+        22
+      ],
+      "bezel": [
+        2,
+        3
+      ],
+      "display": [
+        10,
+        25
+      ],
+      "xiao": [
+        2,
+        6
+      ]
+    },
+    "print_mass_distribution": "uniform effective density within CAD plastic",
+    "null_tip_force": "No tipping mode for this exact force direction in the ideal model; sliding and material limits still apply",
+    "excluded": [
+      "USB cable loads",
+      "sliding",
+      "rubber compliance",
+      "dynamic impact"
+    ]
+  },
+  "without_foot": {
+    "estimated_mass_g": 37.1,
+    "estimated_center_of_mass_mm": [
+      -0.012,
+      5.011,
+      15.718
+    ],
+    "rear_balance_margin_mm": 2.616,
+    "minimum_support_margin_mm": 2.616,
+    "contact_depth_mm": 26.679,
+    "contact_area_mm2": 1080.2,
+    "estimated_tip_force_N": {
+      "screen_center_normal_press": 0.244,
+      "upper_active_edge_normal_press": 0.047,
+      "worst_active_edge_normal_press": 0.047
+    }
+  },
+  "with_foot": {
+    "estimated_mass_g": 37.66,
+    "estimated_center_of_mass_mm": [
+      -0.011,
+      5.128,
+      15.507
+    ],
+    "rear_balance_margin_mm": 10.499,
+    "minimum_support_margin_mm": 10.499,
+    "contact_depth_mm": 34.679,
+    "contact_area_mm2": 1335.9,
+    "estimated_tip_force_N": {
+      "screen_center_normal_press": null,
+      "upper_active_edge_normal_press": 0.294,
+      "worst_active_edge_normal_press": 0.294
+    }
+  },
+  "estimated_worst_edge_tipping_force_improvement_ratio": 6.26,
+  "mass_range_sensitivity": {
+    "rear_balance_margin_mm": [
+      9.301,
+      12.372
+    ],
+    "minimum_support_margin_mm": [
+      9.301,
+      12.372
+    ]
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "battery_mm": [
+    40,
+    30,
+    8
+  ],
+  "pocket_mm": [
+    40.5,
+    30.5,
+    8.5
+  ],
+  "total_clearance_each_axis_mm": 0.5,
+  "clearance_per_side_mm": 0.25,
+  "base_disk_mm": [
+    66.0,
+    12.2
+  ],
+  "assembly_size_mm": [
+    66.0,
+    66.0,
+    49.405
+  ],
+  "upper_puck_face_center_above_disk_mm": 21.0,
+  "upper_puck_uses_original_sliced_profile": true,
+  "separate_rear_heel": false,
+  "material_outside_original_sliced_profile_mm3": 0.0,
+  "bezel_change_outside_screw_seats_mm3": 0.0,
+  "bezel_fasteners": {
+    "type": "M3 x 8 countersunk (overall length)",
+    "included_angle_degrees": 90.0,
+    "mouth_diameter_mm": 6.2,
+    "through_diameter_mm": 3.4,
+    "taper_depth_mm": 1.4,
+    "remaining_straight_land_mm": 0.8,
+    "assumed_screw_head_diameter_mm": 6.0,
+    "assumed_head_below_face_mm": 0.1,
+    "screw_tip_face_local_z_mm": -5.9,
+    "coupon_mouth_diameters_mm": [
+      6.0,
+      6.2,
+      6.4,
+      6.8
+    ]
+  },
+  "component_overlaps_mm3": {
+    "puck/cup": 0.0,
+    "puck/cover": 0.0,
+    "cup/cover": 0.0,
+    "puck/bezel": 0.0
+  },
+  "hardware_collisions_mm3": {
+    "display_stack": 0.0,
+    "underside_components": 0.0,
+    "xiao_headers": 0.0,
+    "battery_clearance": 0.0,
+    "bezel": 0.0
+  },
+  "bottom_loading_clearance_collision_mm3": 0.0,
+  "bottom_loading_samples": 81,
+  "battery_floor_mm": 1.2,
+  "minimum_roof_above_wire_channels_mm": 1.2,
+  "wire_channels_mm": [
+    3.2,
+    1.3
+  ],
+  "wire_passages_mm": [
+    8,
+    5
+  ],
+  "registration_clearance_radial_mm": 0.15,
+  "stack_fasteners": "3 x M3 x 16 mm 90-degree countersunk",
+  "stack_hole_centers_xy_mm": [
+    [
+      -23.8,
+      6
+    ],
+    [
+      23.8,
+      6
+    ],
+    [
+      8,
+      -15
+    ]
+  ],
+  "original_upper_body_removed_volume_mm3": 268.797,
+  "hardware_envelopes_are_assumed": true,
+  "physical_fit_and_slicer_review_required": true,
+  "meshes": {
+    "puck-body": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 9478
+    },
+    "base-disk": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 6116
+    },
+    "battery-cover": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 6976
+    },
+    "bezel": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 6648
+    },
+    "fit-ring": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 1240
+    },
+    "countersink-fit": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 6536
+    }
+  },
+  "part_colors_srgb": {
+    "puck-body": [
+      0.9776915566891456,
+      0.4731206199577918,
+      0.14282567775472238
+    ],
+    "base-disk": [
+      0.2827792898243003,
+      0.3227261167942259,
+      0.3574911753923365
+    ],
+    "battery-cover": [
+      0.2827792898243003,
+      0.3227261167942259,
+      0.3574911753923365
+    ],
+    "bezel": [
+      0.9776915566891456,
+      0.4731206199577918,
+      0.14282567775472238
+    ],
+    "fit-ring": [
+      0.9776915566891456,
+      0.4731206199577918,
+      0.14282567775472238
+    ],
+    "countersink-fit": [
+      0.9776915566891456,
+      0.4731206199577918,
+      0.14282567775472238
+    ]
+  }
+}

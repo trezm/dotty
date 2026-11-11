@@ -1,0 +1,11 @@
+{
+  "outer_diameter": 58.0,
+  "screw_circle_diameter": 50.0,
+  "screw_shaft_diameter": 3.0,
+  "screw_length": 8.0,
+  "screw_pilot_diameter": 2.8,
+  "screw_clearance_diameter": 3.4,
+  "screw_head_diameter": 6.2,
+  "screw_head_recess_depth": 1.1,
+  "screw_lead_in_depth": 0.4
+}

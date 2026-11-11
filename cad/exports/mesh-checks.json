@@ -1,0 +1,50 @@
+{
+  "body": {
+    "watertight": true,
+    "connected_components": 1,
+    "triangles": 3776,
+    "bed_aligned": true
+  },
+  "bezel": {
+    "watertight": true,
+    "connected_components": 1,
+    "triangles": 5700,
+    "bed_aligned": true
+  },
+  "fit-ring": {
+    "watertight": true,
+    "connected_components": 1,
+    "triangles": 1236,
+    "bed_aligned": true
+  },
+  "assembly": {
+    "body_bezel_collision_mm3": 0.0,
+    "face_angle_above_table_degrees": 30.0,
+    "front_top_height_mm": 9.41,
+    "rear_top_height_mm": 36.41,
+    "flat_base_contact_area_mm2": 1335.9,
+    "rear_contact_extension_mm": 8.0,
+    "rear_contact_y_mm": 15.627,
+    "back_parallel_error_degrees": 0.0,
+    "body_depth_normal_to_display_mm": 22.0,
+    "rear_flat_wall_area_mm2": 1059.5,
+    "assumed_hardware_clearance": {
+      "display_stack": {
+        "collision_mm3": 0.0,
+        "minimum_floor_clearance_mm": 3.693,
+        "minimum_back_wall_clearance_mm": 15.2
+      },
+      "underside_components": {
+        "collision_mm3": 0.0,
+        "minimum_floor_clearance_mm": 3.095,
+        "minimum_back_wall_clearance_mm": 12.2
+      },
+      "xiao_headers": {
+        "collision_mm3": 0.0,
+        "minimum_floor_clearance_mm": 1.644,
+        "minimum_back_wall_clearance_mm": 1.2
+      }
+    },
+    "separate_stand": false
+  }
+}

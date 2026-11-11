@@ -1,0 +1,36 @@
+{
+  "study_only": true,
+  "cell_mm": [
+    25,
+    34,
+    5
+  ],
+  "clearance_pocket_mm": [
+    26,
+    35,
+    6
+  ],
+  "new_base_outer_mm": [
+    30,
+    39,
+    8.4
+  ],
+  "bottom_skin_mm": 1.2,
+  "body_lift_mm": 4.0,
+  "battery_center_world_y_mm": 0.6,
+  "added_rear_desk_contact_mm": 4.473,
+  "valid_single_solid": true,
+  "pocket_outside_mm3": 0.0,
+  "pocket_shell_intersection_mm3": 0.0,
+  "pocket_screw_intersection_mm3": 0.0,
+  "pocket_hardware_intersection_mm3": {
+    "display_stack": 0.0,
+    "underside_components": 0.0,
+    "xiao_headers": 0.0
+  },
+  "shell_hardware_intersection_mm3": {
+    "display_stack": 0.0,
+    "underside_components": 0.0,
+    "xiao_headers": 0.0
+  }
+}

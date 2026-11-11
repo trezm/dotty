@@ -1,0 +1,63 @@
+{
+  "valid_single_body": true,
+  "assembly_size_mm": [
+    58.0,
+    62.129,
+    41.205
+  ],
+  "face_angle_degrees": 30.0,
+  "battery_base_rear_y_mm": 22.5,
+  "battery_base_rear_riser_height_mm": 12.587,
+  "battery_base_rear_riser_area_mm2": 475.787,
+  "original_sloped_puck_rear_change_mm3": 0.0,
+  "original_sloped_puck_preserved": true,
+  "original_curved_front_change_mm3": 0.0,
+  "battery_base_outside_original_curve_mm3": 0.0,
+  "pcb_seat_material_lost_mm3": 0.0,
+  "rear_exterior_overhang_requires_support_review": true,
+  "battery_mm": [
+    34.0,
+    25.0,
+    5.0
+  ],
+  "battery_minimum_clearance_pocket_mm": [
+    35.0,
+    26.0,
+    6.0
+  ],
+  "bottom_skin_mm": 1.2,
+  "main_cavity_floor_mm": 1.6,
+  "battery_center_rearward_shift_from_previous_mm": 6.9,
+  "battery_well_open_to_main_cavity": true,
+  "rigid_battery_removal_path_with_boards_removed_mm3": 0.0,
+  "body_collision_mm3": {
+    "display_stack": 0.0,
+    "underside_components": 0.0,
+    "xiao_headers": 0.0,
+    "bezel": 0.0,
+    "battery_clearance": 0.0,
+    "usb_path": 0.0
+  },
+  "hardware_geometry_is_assumed": true,
+  "physical_fit_and_slicer_support_review_required": true,
+  "meshes": {
+    "body": {
+      "watertight": true,
+      "connected_components": 1,
+      "bed_aligned": true,
+      "triangles": 5768
+    },
+    "bezel": {
+      "watertight": true,
+      "connected_components": 1,
+      "bed_aligned": true,
+      "triangles": 5700
+    },
+    "fit-ring": {
+      "watertight": true,
+      "connected_components": 1,
+      "bed_aligned": true,
+      "triangles": 1240
+    }
+  }
+}

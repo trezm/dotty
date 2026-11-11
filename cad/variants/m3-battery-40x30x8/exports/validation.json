@@ -1,0 +1,86 @@
+{
+  "battery_mm": [
+    40,
+    30,
+    8
+  ],
+  "minimum_pocket_mm": [
+    41.0,
+    31.0,
+    9.0
+  ],
+  "clearance_each_side_mm": 0.5,
+  "bottom_skin_mm": 1.2,
+  "assembly_size_mm": [
+    58.0,
+    62.129,
+    44.205
+  ],
+  "face_diameter_mm": 58.0,
+  "face_angle_degrees": 30.0,
+  "height_increase_over_34x25x5_variant_mm": 3.0,
+  "bezel_unchanged_mm3": 0.0,
+  "body_collision_mm3": {
+    "display_stack": 0.0,
+    "underside_components": 0.0,
+    "xiao_headers": 0.0,
+    "bezel": 0.0,
+    "battery_clearance": 0.0,
+    "usb": 0.0
+  },
+  "original_front_change_mm3": 0.0,
+  "original_upper_rear_change_mm3": 0.0,
+  "bottom_loading_clearance_envelope_collision_mm3": 0.0,
+  "bottom_loading_samples": 81,
+  "battery_corner_lead_included_in_user_dimensions": true,
+  "bottom_cover_joint_z_mm": 2.4,
+  "bottom_cover_fasteners": "4 x M3 x 8 countersunk",
+  "bottom_cover_hole_centers_xy_mm": [
+    [
+      -24.0,
+      6.5
+    ],
+    [
+      -24.0,
+      20.5
+    ],
+    [
+      24.0,
+      6.5
+    ],
+    [
+      24.0,
+      20.5
+    ]
+  ],
+  "bottom_grip_radial_wall_checked_mm": 1.2,
+  "countersink_shoulder_checked_mm": 0.8,
+  "hardware_envelopes_are_assumed": true,
+  "physical_fit_and_slicer_review_required": true,
+  "meshes": {
+    "body": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 8654
+    },
+    "battery-cover": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 6906
+    },
+    "bezel": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 5700
+    },
+    "fit-ring": {
+      "watertight": true,
+      "connected": true,
+      "bed_aligned": true,
+      "triangles": 1240
+    }
+  }
+}

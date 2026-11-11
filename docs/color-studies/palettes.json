@@ -1,0 +1,56 @@
+[
+  {
+    "slug": "01-clay-ink",
+    "name": "Clay / Ink",
+    "subtitle": "Warm terracotta, apricot rim, deep ink base",
+    "body": "BB6046",
+    "bezel": "E4AC82",
+    "base": "29393B",
+    "floor": "CFC5B8"
+  },
+  {
+    "slug": "02-petrol-mint",
+    "name": "Petrol / Mint",
+    "subtitle": "Deep teal, sea-glass rim, pale mineral base",
+    "body": "235A61",
+    "bezel": "98C7BB",
+    "base": "D7D3C5",
+    "floor": "BFC9C6"
+  },
+  {
+    "slug": "03-sage-cream",
+    "name": "Sage / Cream",
+    "subtitle": "Soft sage, warm ivory rim, forest base",
+    "body": "8E9C7D",
+    "bezel": "E7DFC4",
+    "base": "37463D",
+    "floor": "C9CCBD"
+  },
+  {
+    "slug": "04-violet-hour",
+    "name": "Violet Hour",
+    "subtitle": "Dusty violet, lilac rim, midnight base",
+    "body": "61557F",
+    "bezel": "C6B6DE",
+    "base": "292638",
+    "floor": "C4BFCE"
+  },
+  {
+    "slug": "05-porcelain",
+    "name": "Porcelain",
+    "subtitle": "Chalk body, champagne rim, blue-grey base",
+    "body": "E4DFD3",
+    "bezel": "C4B494",
+    "base": "74868B",
+    "floor": "D0CDC4"
+  },
+  {
+    "slug": "06-acid-graphite",
+    "name": "Acid / Graphite",
+    "subtitle": "Electric citron, graphite rim and base",
+    "body": "D6E73B",
+    "bezel": "30383D",
+    "base": "242D33",
+    "floor": "C5C7BD"
+  }
+]

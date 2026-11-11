@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+DOTTY_ROOT=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+exec "$DOTTY_ROOT/.venv/bin/python" "$DOTTY_ROOT/companion/watch.py" "$@"

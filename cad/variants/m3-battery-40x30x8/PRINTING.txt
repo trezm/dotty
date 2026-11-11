@@ -1,0 +1,41 @@
+DOTTY / 40 x 30 x 8 mm BATTERY / M3 / REMOVABLE BOTTOM
+
+PRINT AT 100%, MILLIMETERS. All STL parts are already on the print bed.
+
+Print body.stl with its open underside on the bed, battery-cover.stl with its
+flat exterior/countersinks down, and bezel.stl face down. The cover is a final
+assembly part, not a disposable support. Review removable supports under the
+body's sloping rear, PCB tabs and USB roof. Remove supports before assembly.
+
+Starting settings: 0.4 mm nozzle, 0.2 mm layers, 3 walls, 4 top/bottom layers,
+15-20% infill. The 1.2 mm central battery floor is six layers; inspect the slicer
+to ensure it is solid. The cover perimeter is 2.4 mm thick. Its screw shoulders
+are thin: avoid excess torque. Run the included M3 fit-test coupon first.
+
+Battery envelope: 40 ACROSS x 30 FRONT-TO-BACK x 8 mm THICK.
+Minimum clearance pocket: 41 x 31 x 9 mm. Allowance: 0.5 mm each side.
+The user's corner lead does not add to the supplied cell dimensions. The well
+is open toward the electronics cavity; keep the real lead away from the seam.
+
+Hardware:
+  3 x M3 x 8 mm screws for the existing M3 bezel.
+  4 x M3 x 8 mm 90-degree COUNTERSUNK / FLAT-HEAD screws for the bottom.
+Bottom heads: up to 6.6 mm across; clearance 3.4 mm; plastic pilot 2.8 mm.
+Other head styles can protrude under the base. Longer screws are not specified.
+
+Disconnect the battery before opening the cover. Insert it straight through
+the underside, route the top-corner lead upward, then connect/test and fit the
+bottom plate. Do not bend, compress or clamp the pouch. The four bottom screws
+sit outside the cell's full clearance envelope. Confirm the actual connector
+and wire routing before tightening. The nominal battery well does not require
+removing the display bezel/boards, but real connector access still needs checking.
+
+58 mm face, 30-degree tilt, same M3 bezel. Assembled case is 3 mm taller than
+the 34 x 25 x 5 mm battery case. The original curved nose and upper sloped back
+remain. Body STL has its assembled bottom cut at z=2.4 mm translated onto the
+print bed; assembly.step restores its correct position above the cover.
+
+CAD validation is included in validation.json. Physical fit, screw bite, cover
+strength and print-support settings remain prototype checks on your printer.
+
+Rebuild: .venv/bin/python cad/variants/m3-battery-40x30x8/build.py

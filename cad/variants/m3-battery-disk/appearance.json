@@ -1,0 +1,15 @@
+{
+  "color_space": "linear_rgb",
+  "materials": {
+    "orange": {"name": "Orange puck", "rgb": [0.95, 0.19, 0.018]},
+    "slate": {"name": "Slate battery disk", "rgb": [0.065, 0.085, 0.105]}
+  },
+  "parts": {
+    "puck-body": "orange",
+    "bezel": "orange",
+    "fit-ring": "orange",
+    "countersink-fit": "orange",
+    "base-disk": "slate",
+    "battery-cover": "slate"
+  }
+}

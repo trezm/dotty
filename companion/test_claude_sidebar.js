@@ -1,0 +1,10 @@
+const assert = require('node:assert/strict');
+const {dottyClaudeSidebarStatus: read} = require('./claude_sidebar.js');
+const sidebar = body => '0 standard window Claude\n\t1 container Sidebar\n\t\t2 button Home\n\t\t3 button Code\n' + body + '\t4 container Primary pane\n\t\t5 text Unread response\n';
+assert.deepEqual(read(sidebar('\t\t10 button Project\n\t\t\t11 container\n\t\t\t\t12 text Project Unread response\n')), {available:true, unread:true});
+assert.deepEqual(read(sidebar('\t\t10 button Unread response\n\t\t\t11 text Unread response\n')), {available:true, unread:false});
+assert.deepEqual(read(sidebar('\t\t10 button Mark as read\n')), {available:true, unread:true});
+assert.deepEqual(read(sidebar('\t\t10 button Mark as unread\n')), {available:true, unread:false});
+assert.deepEqual(read(sidebar('').replace('button Code\n', 'button Code, unread activity\n')), {available:true, unread:true});
+assert.deepEqual(read('0 standard window Claude\n\t1 text Unread response'), {available:false, unread:false});
+console.log('PASS: Claude sidebar badges, Code rows, chat read actions, title spoofing, message-body exclusion, unknown UI');
