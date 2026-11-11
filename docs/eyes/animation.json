@@ -1,0 +1,15 @@
+{
+  "fps": 20,
+  "frames": 240,
+  "seconds": 12,
+  "screen_pixels": [
+    240,
+    240
+  ],
+  "preview_pixels": [
+    720,
+    720
+  ],
+  "counts_are_illustrative": true,
+  "usage_values_static": true
+}

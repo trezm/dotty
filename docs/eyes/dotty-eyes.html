@@ -1,0 +1,181 @@
+<div id="dotty-eyes-preview">
+  <div class="dotty-stage viz-dotted-background">
+    <canvas width="720" height="720" aria-label="Animated Dotty face: Codex is the left eye and Claude is the right eye. Usage rings stay fixed as the eyes blink and glance."></canvas>
+  </div>
+  <div class="viz-controls" aria-label="Try Dotty's expressions">
+    <button class="btn btn-primary" type="button" data-action="play">Pause demo</button>
+    <button class="btn" type="button" data-expression="idle">Idle</button>
+    <button class="btn" type="button" data-expression="curious">Curious</button>
+    <button class="btn" type="button" data-expression="reply">New reply</button>
+    <button class="btn" type="button" data-expression="question">Question</button>
+    <button class="btn" type="button" data-expression="happy">Happy</button>
+  </div>
+  <div class="text-small text-muted" aria-live="polite" data-status>Idle · Codex left / Claude right</div>
+</div>
+<style>
+  #dotty-eyes-preview { display:grid; gap:calc(var(--font-size-base) * .8); }
+  #dotty-eyes-preview .dotty-stage { display:grid; place-items:center; min-height:320px; padding:20px 0; }
+  #dotty-eyes-preview canvas { display:block; width:min(100%, 390px); height:auto; border-radius:50%; filter:drop-shadow(0 12px 22px rgba(0,0,0,.18)); touch-action:pan-y; }
+</style>
+<script id="dotty-eyes-motion" type="application/json">
+{
+  "duration":12,
+  "blinks":[[0.9,0.20],[3.8,0.18],[6.25,0.20],[8.7,0.18],[9.0,0.18],[11.4,0.22]],
+  "keyframes":[
+    {"t":0,"label":"Idle","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":0,"mouth":0.25,"codex":0,"claude":0,"question":false},
+    {"t":1.3,"label":"Idle","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":0,"mouth":0.25,"codex":0,"claude":0,"question":false},
+    {"t":2.3,"label":"Curious","x":0.85,"y":-0.25,"left":0.8,"right":1.05,"pupil":0.95,"joy":0,"mouth":0.1,"codex":0,"claude":0,"question":false},
+    {"t":3.2,"label":"Curious","x":0.85,"y":-0.25,"left":0.8,"right":1.05,"pupil":0.95,"joy":0,"mouth":0.1,"codex":0,"claude":0,"question":false},
+    {"t":4.3,"label":"Looking around","x":-0.65,"y":0.12,"left":1,"right":0.9,"pupil":1,"joy":0,"mouth":0.25,"codex":0,"claude":0,"question":false},
+    {"t":4.8,"label":"New Codex reply","x":-0.12,"y":-0.22,"left":1.14,"right":1,"pupil":1.2,"joy":0,"mouth":0.55,"codex":1,"claude":0,"question":false},
+    {"t":6.2,"label":"New Codex reply","x":-0.12,"y":-0.22,"left":1.14,"right":1,"pupil":1.2,"joy":0,"mouth":0.55,"codex":1,"claude":0,"question":false},
+    {"t":6.8,"label":"Claude has a question","x":0.25,"y":-0.2,"left":0.86,"right":1.15,"pupil":1.12,"joy":0,"mouth":0.1,"codex":1,"claude":1,"question":true},
+    {"t":8.0,"label":"Claude has a question","x":0.25,"y":-0.2,"left":0.86,"right":1.15,"pupil":1.12,"joy":0,"mouth":0.1,"codex":1,"claude":1,"question":true},
+    {"t":8.5,"label":"All caught up","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":1,"mouth":0.95,"codex":0,"claude":0,"question":false},
+    {"t":9.7,"label":"All caught up","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":1,"mouth":0.95,"codex":0,"claude":0,"question":false},
+    {"t":10.8,"label":"Idle","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":0,"mouth":0.25,"codex":0,"claude":0,"question":false},
+    {"t":12,"label":"Idle","x":0,"y":0,"left":1,"right":1,"pupil":1,"joy":0,"mouth":0.25,"codex":0,"claude":0,"question":false}
+  ]
+}
+</script>
+<script>
+(() => {
+  const root = document.getElementById('dotty-eyes-preview');
+  const canvas = root.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  const motion = JSON.parse(document.getElementById('dotty-eyes-motion').textContent);
+  const status = root.querySelector('[data-status]');
+  const play = root.querySelector('[data-action="play"]');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const settings = { theme:'Classic', motion:1, speed:1, gauges:true, mouth:true };
+  const saved = window.openai?.widgetState;
+  if (saved?.modelContent?.eyeTheme) settings.theme = saved.modelContent.eyeTheme;
+  let playing = !reduced.matches;
+  let manual = null;
+  let offset = 0;
+  let origin = performance.now();
+  let pointer = null;
+  let lastLabel = '';
+  const palette = () => settings.theme === 'Zed' ?
+    {bg:'#080b10',eye:['#ffff00','#e1e0db'],long:'#ffff00',short:'#9a7abd',muted:'#969b9f',text:'#e1e0db'} :
+    {bg:'#080d12',eye:['#49d8b0','#ef7e82'],long:'#49d8b0',short:'#617bff',muted:'#969fa5',text:'#e5e9ea'};
+  const mix = (a,b,u) => a+(b-a)*u;
+  const smooth = u => u*u*(3-2*u);
+  function stateAt(t) {
+    const keys=motion.keyframes;
+    let i=0;
+    while(i<keys.length-2 && t>=keys[i+1].t) i++;
+    const a=keys[i], b=keys[i+1];
+    const u=smooth(Math.max(0,Math.min(1,(t-a.t)/(b.t-a.t))));
+    const s={...a};
+    for(const key of ['x','y','left','right','pupil','joy','mouth']) s[key]=mix(a[key],b[key],u);
+    return s;
+  }
+  const expression = name => {
+    const key={idle:0,curious:2,reply:5,question:7,happy:9}[name];
+    return {...motion.keyframes[key]};
+  };
+  function blink(t,index) {
+    let open=1;
+    for(const [center,duration] of motion.blinks) {
+      const u=(t-center-index*.013)/duration+.5;
+      if(u>0 && u<1) open=Math.min(open,Math.max(.025,1-Math.sin(Math.PI*u)**2));
+    }
+    return open;
+  }
+  function ellipse(x,y,rx,ry,fill) {
+    ctx.beginPath();ctx.ellipse(x,y,rx,Math.max(ry,.7),0,0,Math.PI*2);ctx.fillStyle=fill;ctx.fill();
+  }
+  function arc(x,y,r,start,end,color,width,alpha=1) {
+    ctx.save();ctx.globalAlpha=alpha;ctx.strokeStyle=color;ctx.lineWidth=width;ctx.lineCap='round';
+    ctx.beginPath();ctx.arc(x,y,r,start,end);ctx.stroke();ctx.restore();
+  }
+  function text(value,x,y,size,color,weight=400) {
+    ctx.fillStyle=color;ctx.font=`${weight} ${size}px ui-monospace, monospace`;
+    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(value,x,y);
+  }
+  function paint(t) {
+    const p=palette(), s=manual?{...manual}:stateAt(t);
+    if(pointer) {s.x=pointer.x;s.y=pointer.y;}
+    ctx.setTransform(3,0,0,3,0,0);ctx.clearRect(0,0,240,240);
+    ellipse(120,120,119,119,p.bg);
+    const pending=s.codex+s.claude>0;
+    const alpha=pending?.6+.3*Math.sin(t*5):.35;
+    arc(120,120,116,0,Math.PI*2,pending?p.eye[s.question?1:0]:p.muted,1.3,alpha);
+    text('D O T T Y',120,22,11,p.text,500);
+    ctx.strokeStyle=p.muted;ctx.lineWidth=.8;ctx.strokeRect(91,37,13,6);ctx.fillStyle=p.long;ctx.fillRect(93,39,7,2);ctx.fillRect(104,39,2,2);
+    text('3.80V',129,40,7,p.muted);
+    [67,173].forEach((x,index) => {
+      const y=106, accent=p.eye[index], count=index?s.claude:s.codex;
+      if(settings.gauges) {
+        [[49,index?65:8,p.long],[41,index?42:32,p.short]].forEach(([r,used,color])=>{
+          arc(x,y,r,0,2*Math.PI,color,3,.13);
+          arc(x,y,r,-Math.PI/2,-Math.PI/2+2*Math.PI*used/100,color,3);
+        });
+      }
+      if(count) arc(x,y,35.2,0,Math.PI*2,accent,1.5,.4+.3*Math.sin(t*5));
+      const blinkValue=blink(t,index), open=(index?s.right:s.left)*blinkValue;
+      const h=29*open*(1-s.joy*.7);
+      if(s.joy>.7) {
+        ctx.save();ctx.strokeStyle=accent;ctx.lineWidth=7;ctx.lineCap='round';
+        ctx.beginPath();ctx.ellipse(x,y+5,24,Math.max(1,12*open),0,Math.PI,2*Math.PI);ctx.stroke();ctx.restore();
+      } else {
+        ellipse(x,y,30,h,accent);
+        ctx.save();ctx.beginPath();ctx.ellipse(x,y,30,Math.max(.7,h),0,0,Math.PI*2);ctx.clip();
+        const px=x+s.x*settings.motion*10, py=y+s.y*settings.motion*8;
+        ellipse(px,py,12*s.pupil,13*s.pupil,p.bg);
+        ellipse(px-3.8,py-4.4,2.3,2.3,'#f4ffff');
+        ctx.restore();
+      }
+      text(index?'CLAUDE':'CODEX',x,167,8.5,p.text,500);
+      text(count?`${count} ${index?(s.question?'question':'pending'):'unread'}`:'All read',x,180,7.5,count?accent:p.muted);
+      text(`5h ${index?42:32}%`,x,196,7.5,p.short);
+      text(`7d ${index?65:8}%`,x,208,7.5,p.long);
+    });
+    if(settings.mouth) {
+      ctx.strokeStyle=p.muted;ctx.lineWidth=1.5;ctx.lineCap='round';ctx.beginPath();
+      ctx.moveTo(112,162);ctx.quadraticCurveTo(120,162+s.mouth*9,128,162);ctx.stroke();
+    }
+    text(s.question?'Claude needs you':s.codex?'New Codex reply':'All caught up',120,224,6.8,p.muted);
+    if(s.label!==lastLabel) { status.textContent=`${s.label} · Codex left / Claude right`;lastLabel=s.label; }
+    root.dataset.expression=s.label;
+  }
+  function persist() {
+    window.openai?.setWidgetState({modelContent:{eyeTheme:settings.theme,eyeExpression:manual?.label||'Demo'},privateContent:{playing}})?.catch(()=>{});
+  }
+  play.addEventListener('click',()=>{
+    if(playing) {offset=((performance.now()-origin)/1000*settings.speed+offset)%motion.duration;playing=false;}
+    else {manual=null;origin=performance.now();playing=true;}
+    play.textContent=playing?'Pause demo':'Play demo';persist();
+  });
+  root.querySelectorAll('[data-expression]').forEach(button=>button.addEventListener('click',()=>{
+    manual=expression(button.dataset.expression);playing=false;offset=0;origin=performance.now();pointer=null;
+    play.textContent='Play demo';paint(0);persist();
+  }));
+  canvas.addEventListener('pointermove',event=>{
+    if(event.pointerType==='touch') return;
+    const rect=canvas.getBoundingClientRect();
+    pointer={x:Math.max(-1,Math.min(1,(event.clientX-rect.left-rect.width/2)/(rect.width*.45))),y:Math.max(-.8,Math.min(.8,(event.clientY-rect.top-rect.height*.44)/(rect.height*.4)))};
+  });
+  canvas.addEventListener('pointerleave',()=>{pointer=null;});
+  window.addEventListener('openai:set_globals',event=>{
+    const state=event.detail?.globals?.widgetState;
+    if(state?.modelContent?.eyeTheme) settings.theme=state.modelContent.eyeTheme;
+  });
+  play.textContent=playing?'Pause demo':'Play demo';
+  paint(0);
+  if(globalThis.Tweak) {
+    const tweak=new Tweak({container:canvas,onChange:()=>paint(offset)});
+    tweak.addSelect(settings,'theme',{label:'Screen palette',options:['Classic','Zed']});
+    tweak.addSlider(settings,'motion',{label:'Eye movement',min:.3,max:1.3,step:.1});
+    tweak.addSlider(settings,'speed',{label:'Animation speed',min:.5,max:1.5,step:.1});
+    tweak.addToggle(settings,'gauges',{label:'Usage rings'});
+    tweak.addToggle(settings,'mouth',{label:'Tiny smile'});
+  }
+  function frame(now) {
+    const t=playing?((now-origin)/1000*settings.speed+offset)%motion.duration:offset;
+    paint(t);requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
