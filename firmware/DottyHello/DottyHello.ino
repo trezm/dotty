@@ -33,6 +33,8 @@ int8_t pressedButton = -1;
 TouchLatch touch;
 uint32_t touchPackets = 0, touchErrors = 0, touchDowns = 0;
 uint32_t fullDrawUs = 0, updateDrawUs = 0;
+uint32_t lastEyeDraw = 0;
+uint32_t eyeUpdates = 0;
 NotificationState notifications;
 bool notificationMode = false;
 int8_t notificationPressed = -1;
@@ -183,6 +185,7 @@ void drawChanges(bool title, bool counter, bool buttons) {
 
 RingDashboard::State dashboardState() {
   RingDashboard::State state;
+  state.now = millis();
   state.battery = battery.reading;
   state.providers[0].available = notificationConnected && (notifications.available & 1);
   state.providers[0].count = notifications.codex;
@@ -223,26 +226,27 @@ RingDashboard::State dashboardState() {
   return state;
 }
 
-void drawNotifications(bool buttonOnly = false) {
+void drawNotifications(bool eyesOnly = false) {
+  const uint32_t start = micros();
   RingDashboard::State state = dashboardState();
   if (buffered) {
-    if (buttonOnly) {
-      for (uint8_t i = 0; i < 2; ++i) {
-        RingDashboard::paintButton(frame, state.providers[i], i);
-        constexpr int16_t radius = RingDashboard::buttonRadius + 1;
-        int16_t x = RingDashboard::centerX[i] - radius;
-        int16_t y = RingDashboard::centerY - radius;
-        frame.pushSprite(x, y, x, y, radius * 2 + 1, radius * 2 + 1);
-      }
+    if (eyesOnly) {
+      RingDashboard::paintEyes(frame, state);
+      frame.pushSprite(DottyEyes::bandX, DottyEyes::bandY,
+                       DottyEyes::bandX, DottyEyes::bandY,
+                       DottyEyes::bandWidth, DottyEyes::bandHeight);
     } else {
       RingDashboard::paint(frame, state);
       frame.pushSprite(0, 0);
     }
-  } else if (buttonOnly) {
-    for (uint8_t i = 0; i < 2; ++i) RingDashboard::paintButton(display, state.providers[i], i);
+  } else if (eyesOnly) {
+    RingDashboard::paintEyes(display, state);
   } else {
     RingDashboard::paint(display, state);
   }
+  lastEyeDraw = eyesOnly ? state.now : millis();
+  if (eyesOnly) { updateDrawUs = micros() - start; ++eyeUpdates; }
+  else fullDrawUs = micros() - start;
 }
 
 void receiveNotification(const char *line, bool fromUsb = true, unsigned long wifiEpoch = 0) {
@@ -351,10 +355,14 @@ void updateNotifications() {
   if (notificationConnected && notifications.available &&
       notifications.codex + notifications.claude > 0 && uint32_t(now - lastPulse) >= 100) {
     lastPulse = now;
-    // Pulse only the two thin display-border circles. Quota arcs and text
+    // Pulse only the thin display border. Quota arcs and text
     // stay still, and animation never transfers a full-screen frame.
     RingDashboard::paintBorder(display, dashboardState().border);
   }
+  // The unbuffered fallback remains usable without repeatedly blanking the
+  // face. A normal buffered display animates at up to 25 fps, without delays.
+  if (buffered && uint32_t(millis() - lastEyeDraw) >= DottyEyes::frameMs)
+    drawNotifications(true);
   if (pendingOpen) {
     if (uint32_t(now - pendingOpenSince) > 2000) {
       pendingOpen = false;
@@ -418,9 +426,9 @@ void setup() {
   analogSetPinAttenuation(A0, ADC_11db);
   analogReadMilliVolts(A0);  // Discard the initial conversion after ADC setup.
   DottyWifi::begin();
-  if (DottyWifi::configured()) { notificationMode = true; drawNotifications(); }
-  else drawScreen();
-  logLine("Dotty ready (responsive touch). Tap +1 / Color. r: reset, s: status.\n");
+  notificationMode = true;
+  drawNotifications();
+  logLine("Dotty ready (Vector eyes + perimeter usage). s: status.\n");
   logLine("@D2 READY\n");
 }
 
@@ -543,6 +551,11 @@ void loop() {
               notifications.monitored, notifications.localFeeds);
       logLine("Pending: Claude=%u exact=%d\n", claudePendingCount, haveClaudeCount);
       logLine("WiFi: configured=%d connected=%d\n", DottyWifi::configured(), DottyWifi::connected());
+      logLine("UI: vector-eyes frame_ms=%lu updates=%lu heap=%lu stack=%lu\n",
+              static_cast<unsigned long>(DottyEyes::frameMs),
+              static_cast<unsigned long>(eyeUpdates),
+              static_cast<unsigned long>(ESP.getFreeHeap()),
+              static_cast<unsigned long>(uxTaskGetStackHighWaterMark(nullptr)));
       logLine("Battery: adc_mV=%u battery_mV=%u bars=%d\n", battery.adcMillivolts,
               battery.reading.millivolts, battery.reading.bars);
       for (uint8_t provider = 0; provider < 3; ++provider)

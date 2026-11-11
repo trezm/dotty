@@ -85,7 +85,7 @@ int main() {
   assert(RingDashboard::hitTest(120, 111) == -1);
   assert(RingDashboard::hitTest(67, 62) == -1);  // Usage arcs are not app buttons.
   assert(RingDashboard::hitTest(67, 78) == 0);
-  assert(RingDashboard::pulseColor(0, false, 0x4ef5) == RingDashboard::muted);
+  assert(RingDashboard::pulseColor(0, false, 0x4ef5) == RingDashboard::background);
   assert(RingDashboard::pulseColor(0, true, 0x4ef5) != RingDashboard::pulseColor(1100, true, 0x4ef5));
-  puts("PASS: provider counts, circular touch targets, percent-used slot ordering, border pulse");
+  puts("PASS: provider counts, eye touch targets, percent-used slot ordering, border pulse");
 }

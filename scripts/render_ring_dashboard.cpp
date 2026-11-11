@@ -11,6 +11,11 @@ struct Canvas {
     std::cout << "{\"op\":\"pixel\",\"x\":" << x << ",\"y\":" << y << ",\"color\":" << c << "}\n";
   }
   void fillScreen(unsigned c) { std::cout << "{\"op\":\"fill\",\"color\":" << c << "}\n"; }
+  void fillRect(int x, int y, int w, int h, unsigned c) {
+    std::cout << "{\"op\":\"rect\",\"x\":" << x << ",\"y\":" << y
+              << ",\"w\":" << w << ",\"h\":" << h << ",\"color\":" << c << "}\n";
+  }
+  void drawFastHLine(int x, int y, int w, unsigned c) { fillRect(x,y,w,1,c); }
   void drawCircle(int x, int y, int r, unsigned c) { circle("circle", x, y, r, c); }
   void fillCircle(int x, int y, int r, unsigned c) { circle("disk", x, y, r, c); }
   void circle(const char *op, int x, int y, int r, unsigned c) {
@@ -18,10 +23,10 @@ struct Canvas {
               << ",\"r\":" << r << ",\"color\":" << c << "}\n";
   }
   void drawSmoothArc(int x, int y, int r, int ir, unsigned start, unsigned end,
-                     unsigned c, unsigned, bool) {
+                     unsigned c, unsigned, bool rounded) {
     std::cout << "{\"op\":\"arc\",\"x\":" << x << ",\"y\":" << y
               << ",\"r\":" << r << ",\"ir\":" << ir << ",\"start\":" << start
-              << ",\"end\":" << end << ",\"color\":" << c << "}\n";
+              << ",\"end\":" << end << ",\"rounded\":" << rounded << ",\"color\":" << c << "}\n";
   }
   void drawString(const char *text, int x, int y, unsigned font) {
     std::cout << "{\"op\":\"text\",\"text\":\"";
@@ -65,6 +70,8 @@ int main() {
   bool claude = usageConsumed(state.providers[1].windows[0]) >= 0 ||
                 usageConsumed(state.providers[1].windows[1]) >= 0;
   state.footer = claude ? "Tap / hold to clear" : "Claude usage offline";
+  unsigned now;
+  if (std::cin >> now) state.now = now;
   Canvas canvas;
   RingDashboard::paint(canvas, state);
 }
