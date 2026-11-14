@@ -104,7 +104,7 @@ class DesktopUnread:
                 raise DesktopUnreadError("Local thread activity revision is missing")
             tokens[ident] = hashlib.sha256(json.dumps(
                 [scope, ident, revision if ident in flags else None, questions.get(ident)]).encode()).hexdigest()
-        return tokens, flags | questions.keys()
+        return tokens, flags | questions.keys(), questions.keys()
 
     def pending(self, tokens: dict, dismissed: dict) -> dict:
         return {ident: token for ident, token in tokens.items() if dismissed.get(ident) != token}
@@ -115,7 +115,7 @@ class DesktopUnread:
 
     def snapshot(self, report: dict) -> dict:
         with self.locked():
-            tokens, flags = self.tokens(report)
+            tokens, flags, questions = self.tokens(report)
             dismissed = self.dismissed()
             # A collector scan can precede a clear performed by another thread.
             # Never delete a newer acknowledgement using an older server revision.
@@ -126,12 +126,13 @@ class DesktopUnread:
                 "generated_at": time.time(), "native_unread_count": report["unread_count"],
                 "unread_count": len(pending),
                 "unread_by_thread": {ident: ident in pending for ident in report["unread_by_thread"]},
-                "unread_revisions": pending}
+                "unread_revisions": pending,
+                "pending_question_threads": sorted(set(pending).intersection(questions))}
 
     def acknowledge(self, expected: tuple, report: dict) -> tuple[int, int]:
         """A hold dismisses only the displayed revisions in Dotty's own journal."""
         with self.locked():
-            tokens, flags = self.tokens(report)
+            tokens, flags, _ = self.tokens(report)
             dismissed = self.dismissed()
             kept = {ident: token for ident, token in dismissed.items() if ident in flags}
             pending = self.pending(tokens, kept)

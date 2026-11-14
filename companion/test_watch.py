@@ -195,6 +195,9 @@ for line in sys.stdin:
         snapshot = local_snapshot(report)
         self.assertEqual(snapshot["available"], {"codex": True, "chatgpt": False})
         self.assertEqual(snapshot["unread"], [{"kind": "codex", "id": "one"}])
+        report.update(thread_attention={"one": "approval"}, thread_activity={"one": 10})
+        self.assertEqual(local_snapshot(report)["unread"][0],
+                         {"kind": "codex", "id": "one", "attention": "approval", "activityAt": 10})
         report["uncovered_thread_count"] = 1
         self.assertFalse(local_snapshot(report)["available"]["codex"])
         self.assertEqual(local_snapshot(report)["unread"], [])

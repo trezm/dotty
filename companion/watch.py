@@ -32,7 +32,12 @@ def local_snapshot(report: dict | None) -> dict:
             "available": {"codex": available, "chatgpt": False},
             "unread": [{"kind": "codex", "id": ident,
                         **({"readRevision": report["unread_revisions"][ident]}
-                           if ident in report.get("unread_revisions", {}) else {})} for ident, value in
+                           if ident in report.get("unread_revisions", {}) else {}),
+                        **({"attention": report["thread_attention"][ident]}
+                           if ident in report.get("thread_attention", {}) else
+                           {"attention": "question"} if ident in report.get("pending_question_threads", ()) else {}),
+                        **({"activityAt": report["thread_activity"][ident]}
+                           if ident in report.get("thread_activity", {}) else {})} for ident, value in
                        (report["unread_by_thread"].items() if report and available else []) if value]}
 
 

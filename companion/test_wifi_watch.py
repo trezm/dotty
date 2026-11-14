@@ -14,6 +14,38 @@ from test_wifi import Puck, profile, free_port
 
 
 class WifiWatchTest(unittest.TestCase):
+    def test_authenticated_wifi_tap_routes_a_pending_conversation(self):
+        helper = test_watch.WatchTest()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            binary, feed = helper.fake_server(root)
+            save_snapshot({"unread": True, "revision": "r1"}, feed)
+            config = profile(free_port())
+            save_snapshot(config, root / "wifi-pairing.json")
+            process = helper.start(root, binary, root / "unplugged",
+                                   extra=("--wifi-bind", "127.0.0.1"))
+            puck = None
+            try:
+                helper.until(lambda: (root / "app-server-live.json").exists()
+                             and json.loads((root / "app-server-live.json").read_text())["available"]["codex"])
+                def connect():
+                    try: return Puck(config)
+                    except (OSError, ValueError): return None
+                puck = helper.until(connect)
+                revision = puck.state(1)
+                puck.send(b"@D2 OPEN " + revision + b" 0")
+                log = root / "opens.jsonl"
+                helper.until(log.exists)
+                event = json.loads(log.read_text().splitlines()[0])
+                self.assertEqual(event["target"], "openai")
+                self.assertEqual(event["navigation"], "conversation")
+                self.assertTrue(event["dry_run"])
+                self.assertTrue(json.loads(feed.read_text())["unread"])
+                self.assertFalse((root / "marks.jsonl").exists())
+            finally:
+                if puck: puck.close()
+                helper.stop(process)
+
     def test_usb_preempts_wifi_and_wifi_returns_after_usb_disconnect(self):
         helper = test_watch.WatchTest()
         with tempfile.TemporaryDirectory() as directory:

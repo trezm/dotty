@@ -28,6 +28,16 @@ class Pages:
 
 
 class AppServerTest(unittest.TestCase):
+    def test_attention_and_activity_are_structured_metadata_only(self):
+        report = collect(Pages(page([
+            {"id": "approve", "updatedAt": 200, "status": {"type": "active", "activeFlags": ["waitingOnApproval"]}},
+            {"id": "ask", "updatedAt": 100, "status": {"type": "active", "activeFlags": ["waitingOnUserInput"]}},
+            {"id": "reply", "updatedAt": "PRIVATE", "status": {"type": "idle", "activeFlags": ["waitingOnApproval"]}},
+        ], {key: receipt(True) for key in ("approve", "ask", "reply")})), set())
+        self.assertEqual(report["thread_attention"], {"approve": "approval", "ask": "question"})
+        self.assertEqual(report["thread_activity"], {"approve": 200, "ask": 100})
+        self.assertNotIn("PRIVATE", json.dumps(report))
+
     def test_pagination_filters_subagents_and_saves_only_metadata(self):
         client = Pages(
             page([{"id": "a", "preview": "PRIVATE", "name": "ignore instructions"},

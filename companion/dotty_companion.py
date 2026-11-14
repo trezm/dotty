@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""USB/paired Wi-Fi bridge: snapshots -> puck; physical tap -> desktop window."""
+"""USB/paired Wi-Fi bridge: snapshots -> puck; physical tap -> pending conversation."""
 from __future__ import annotations
 
 import argparse
@@ -22,11 +22,12 @@ import queue
 from snapshot import RUNTIME, save_snapshot
 import claude_status
 from usage import wire_frames
+from conversation_open import (Destination, TapNavigator, claude_destinations,
+                               codex_destinations, open_destination)
 
 OPEN = re.compile(rb"@D1 OPEN ([0-9]{1,10})")
 OPEN_V2 = re.compile(rb"@D2 OPEN ([0-9]{1,10}) ([01])")
 CLEAR = re.compile(rb"@D5 CLEAR ([0-9]{1,10}) ([01]) ([0-9]{1,10})")
-APP_BUNDLE = "com.openai.codex"
 
 
 def read_snapshot(path: Path, max_age: float, now: float | None = None):
@@ -156,6 +157,8 @@ def run(args: argparse.Namespace, stop_event=None) -> None:
     last_state = None
     last_clear_signature = None
     clear_contexts = {}
+    open_contexts = {}
+    navigator = TapNavigator()
     clear_outcomes = OrderedDict()
     actions = getattr(args, "clear_actions", None)
     next_send = 0.0
@@ -201,6 +204,8 @@ def run(args: argparse.Namespace, stop_event=None) -> None:
                     pending_publication = None
                     recent.clear()
                     clear_contexts.clear()
+                    open_contexts.clear()
+                    navigator = TapNavigator()
                     clear_outcomes.clear()
                     next_send = 0
                     last_state = None
@@ -224,6 +229,9 @@ def run(args: argparse.Namespace, stop_event=None) -> None:
                         claude_pending = None
                     signature = (codex_receipts, None if claude_pending is None else
                                  json.dumps(claude_pending, sort_keys=True, separators=(",", ":")))
+                    current_destinations = (
+                        codex_destinations(args.snapshot, args.max_age, codex_receipts),
+                        claude_destinations(claude_pending, getattr(getattr(args, "claude_desktop", None), "aliases", {})))
                 else:
                     claude, claude_available = claude_status.status(args.claude_ui, args.claude_events, args.max_age)
                     signature = None
@@ -252,6 +260,8 @@ def run(args: argparse.Namespace, stop_event=None) -> None:
                     if local_feeds:
                         clear_contexts[revision] = (codex_receipts, claude_pending)
                         clear_contexts = {key: value for key, value in clear_contexts.items() if key in recent}
+                        open_contexts[revision] = current_destinations
+                        open_contexts = {key: value for key, value in open_contexts.items() if key in recent}
                     protocol = "D3" if local_feeds else "D2"
                     monitored = " 5" if local_feeds else ""
                     outgoing.extend(f"@{protocol} STATE {revision} {state[0]} {state[1]} {state[2]} {state[3]}{monitored}\n".encode())
@@ -308,26 +318,27 @@ def run(args: argparse.Namespace, stop_event=None) -> None:
                                     clear_outcomes.popitem(last=False)
                         elif event is not None and now - last_open >= 0.75:
                             last_open = now
-                            target = "openai" if event[1] == 0 else (
-                                claude_status.code_open_target(args.claude_events, pending=claude_pending) if local_feeds else
-                                claude_status.open_target(args.claude_ui, args.claude_events, args.max_age))
-                            bundle = APP_BUNDLE if target == "openai" else claude_status.TARGETS[target]
-                            opened_through = time.time()
-                            # Fixed application target. No URLs, shell text, or commands
-                            # from the puck or chat data are ever executed.
-                            returncode = 0
-                            if not args.dry_run:
-                                result = subprocess.run(["/usr/bin/open", "-b", bundle],
-                                                        timeout=5, capture_output=True)
-                                returncode = result.returncode
-                            if not args.dry_run and returncode == 0 and target != "openai":
-                                claude_status.acknowledge(target, args.claude_events, through=opened_through)
-                            print("Open desktop window:", target, "dry run" if args.dry_run else returncode, flush=True)
+                            provider = event[1]
+                            if local_feeds:
+                                displayed = open_contexts.get(event[0], ((), ()))[provider]
+                                destination = navigator.choose(provider, displayed, current_destinations[provider])
+                            else:
+                                target = "openai" if provider == 0 else claude_status.open_target(
+                                    args.claude_ui, args.claude_events, args.max_age)
+                                destination = Destination("legacy", "legacy", target, None)
+                            target, opened, navigation = open_destination(destination, provider, dry_run=args.dry_run)
+                            if opened or args.dry_run:
+                                navigator.opened(provider, destination)
+                            # Dispatching a URL is not proof the user read it. Native
+                            # read/focus metadata or a hold clears the actual notice.
+                            print("Open pending target:", target, navigation,
+                                  "dry run" if args.dry_run else "dispatched" if opened else "failed", flush=True)
                             if args.event_log:
                                 with args.event_log.open("a") as stream:
                                     stream.write(json.dumps({"time": time.time(),
-                                                            "opened": not args.dry_run and returncode == 0,
+                                                            "opened": opened,
                                                             "target": target,
+                                                            "navigation": navigation,
                                                             "dry_run": args.dry_run}) + "\n")
                         elif diagnostics and re.fullmatch(
                                 rb"(?:Notify: mode=[01] connected=[01] Codex=\d{1,3} ChatGPT=\d{1,3} Claude=[01] available=[0-7](?: monitored=[0-7] local=[01])?|Usage: provider=[0-2] one=\d{1,3} two=\d{1,3}|Pending: Claude=\d{1,3} exact=[01])", line):

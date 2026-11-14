@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 from pathlib import Path
 import select
@@ -225,6 +226,8 @@ def collect(client, exclude: set[str], *, max_pages: int = 100) -> dict:
     receipts = {}
     revisions = {}
     thread_revisions = {}
+    thread_activity = {}
+    thread_attention = {}
     uncovered = set()
     for page in range(max_pages):
         params = {"limit": 100, "sortKey": "created_at", "sortDirection": "desc",
@@ -254,6 +257,17 @@ def collect(client, exclude: set[str], *, max_pages: int = 100) -> dict:
             if ident in thread_revisions and thread_revisions[ident] != states[ident]["revision"]:
                 raise AppServerError("Read receipts changed during pagination; retry the scan")
             thread_revisions[ident] = states[ident]["revision"]
+            activity = row.get("updatedAt")
+            if type(activity) in (int, float) and math.isfinite(activity) and activity >= 0:
+                thread_activity[ident] = activity
+            status = row.get("status")
+            if isinstance(status, dict) and status.get("type") == "active":
+                flags = status.get("activeFlags")
+                if isinstance(flags, list):
+                    if "waitingOnApproval" in flags:
+                        thread_attention[ident] = "approval"
+                    elif "waitingOnUserInput" in flags:
+                        thread_attention[ident] = "question"
             if value:
                 if ident in revisions and revisions[ident] != states[ident]["revision"]:
                     raise AppServerError("Read receipts changed during pagination; retry the scan")
@@ -265,7 +279,8 @@ def collect(client, exclude: set[str], *, max_pages: int = 100) -> dict:
                     "generated_at": time.time(), "pages": page + 1,
                     "receipt_count": len(receipts), "unread_count": sum(receipts.values()),
                     "uncovered_thread_count": len(uncovered), "unread_by_thread": receipts,
-                    "unread_revisions": revisions, "thread_revisions": thread_revisions}
+                    "unread_revisions": revisions, "thread_revisions": thread_revisions,
+                    "thread_activity": thread_activity, "thread_attention": thread_attention}
         if not isinstance(cursor, str) or not cursor or cursor in cursors:
             raise AppServerError("Invalid or repeated pagination cursor")
         cursors.add(cursor)

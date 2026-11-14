@@ -10,6 +10,35 @@ Or run `/Users/pete/Documents/ChatGPT/dotty/dotty` from any directory. Leave its
 
 The entrypoint uses this checkout's Python environment and the Codex CLI bundled with the desktop app. The watcher and USB/Wi-Fi bridge need only Python's standard library; macOS's built-in `dns-sd` advertises the optional wireless service. It starts a private JSONL-over-stdio app-server for local thread metadata and subscription usage, without exposing app-server on the network, starting model turns, or using Codex quota. Every two seconds it reads the desktop's saved unread flags and filters them to eligible local chats. App-server crashes trigger a reconnect. Collection continues while the puck is unplugged, and USB or paired Wi-Fi reconnects automatically.
 
+## Tap an eye to open a pending conversation
+
+A short tap opens a conversation from that provider's displayed pending queue.
+Reported questions and approvals come first, followed by unread replies (oldest activity
+first when a timestamp is available). Repeated taps visit the other pending
+conversations, then cycle around. Each provider has its own cycle; new notices
+get a fresh place in it. Hold an eye for one second to clear its displayed
+Dotty indicators as before.
+
+Codex uses its documented `codex://threads/<thread-id>` link. Local Claude
+Desktop Code sessions use `claude://code/continue?session=<local-session-id>`,
+the same route used by the installed Desktop app's own session shortcuts.
+This Claude route depends on Desktop support and is not in its public link
+reference. Hook session IDs are mapped to Desktop IDs only when the native
+metadata supplies a validated alias. Terminal/IDE-only notices open their
+owning app; they cannot yet select the exact terminal tab.
+
+Conversation IDs stay on the Mac. The puck sends only the existing provider
+button and displayed revision, over USB or authenticated Wi-Fi. The watcher
+intersects that displayed queue with the current receipt set, so an outdated
+tap cannot jump to an already-cleared notice or a new arrival the puck hasn't
+displayed. With no pending target, an unknown source, an unsupported session ID,
+or a failed link dispatch, the watcher opens the app. Links are constructed from
+validated IDs; chat text and arbitrary URLs are never executed.
+
+A successful macOS URL dispatch does not confirm navigation or mark notices
+read in Dotty. The apps' actual read/focus metadata and matching question
+answers update the counts. Tapping an eye never bulk-clears completion hooks.
+
 ## Home-network Wi-Fi
 
 The puck joins your existing **2.4 GHz home Wi-Fi**. The Mac stays on its usual
